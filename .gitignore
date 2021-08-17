@@ -1,6 +1,8 @@
 # Confidential stuff 
 config.py
 
+myREADME.md
+
 # Node stuff
 node_modules
 build

@@ -1,56 +1,115 @@
 <html>
-    <head>
-        <title>Coinview </title>
-        <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
-    </head>
 
-    <body>
+<head>
+    <title>Coinview </title>
+    <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
+    <!-- Google Fonts -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300italic,700,700italic">
+
+    <!-- CSS Reset -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.css">
+
+    <!-- Milligram CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/milligram/1.4.1/milligram.css">
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <br>
+    <div style="margin: auto; position: sticky; text-align: center;">
         <h1>{{ title }}</h1>
+        <br>
+        
+    </div>
+    <div style="margin-left: 20px; position: sticky;">
+    <h5>Chart</h5>
+    </div>
+    <div id="chart" style="margin-left: 20px;"></div>
+    <!-- div which will display trades -->
+    <div id="trades"></div>
 
-        <div id="chart"></div>
-        <!-- div which will display trades -->
-        <div id="trades"></div>
 
-        <div style="border: solid gray 1px; padding: 20px; margin-top: 20px; width:600px;">
-            <h3> Buy Crypto </h3>
-            
-            {% with messages = get_flashed_messages() %}
-                {% if messages %}
-                <div style="padding: 10px; margin-bottom:10px; background:pink; border:solid red 1px; color:red;">
-                    {% for message in messages %}
-                        {{ message }}
-                    {% endfor %}
-                </div>
-                {% endif %}
-            {% endwith %}
-            <!-- A form basically allows us to submit/pass the information to a flask route that we had defined in app -->
-            <form action="/buy" method="post">
+    <div style="border: solid gray 1px; padding: 20px; margin-top: 20px; width:600px; margin-left: auto; float: right; font-size: small;">
+        <h5>Settings</h5>
+        <input type="checkbox" /> RSI
+
         
-        
-                <input type="text" id="quantity" name="quantity" placeholder="eg. 0.02" />
-        
-                <select id="symbol" name="symbol">
-                    {% for symbol in symbols %}
-                    <option>
-                        {{symbol['symbol']}}
-                    </option>
-                    {% endfor %}
-                </select>
-        
-                <input type="submit" name="buy" value="buy" />
-            </form>
+        <input type="text" id="rsi_length" name="rsi_length" placeholder="14" />
+        Overbought
+        <input type="text" id="rsi_overbought" name="rsi_overbought" placeholder="70" />
+        Oversold
+        <input type="text" id="rsi_oversold" name="rsi_oversold" placeholder="30" />
+
+    </div>
+
+    <div style="position:relative; border: solid gray 1px; padding: 20px; margin-top: 60px; width:600px;  margin-left: 20px;">
+        <h3> Buy Crypto </h3>
+
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <div style="padding: 10px; margin-bottom:10px; background:pink; border:solid red 1px; color:red;">
+            {% for message in messages %}
+            {{ message }}
+            {% endfor %}
         </div>
+        {% endif %}
+        {% endwith %}
+        <!-- A form basically allows us to submit/pass the information to a flask route that we had defined in app -->
+        <form action="/buy" method="post">
 
-        
+            <input type="text" id="quantity" name="quantity" placeholder="eg. 0.02" />
 
+            <select id="symbol" name="symbol">
+                {% for symbol in symbols %}
+                <option>
+                    {{symbol['symbol']}}
+                </option>
+                {% endfor %}
+            </select>
+            <a class="button">
+                <input type="submit" name="buy" value="buy" />
+            </a>
+        </form>
+    </div>
+
+
+    <br>
+
+
+    <div style="border: solid gray 1px; padding: 20px; margin-top: 20px; width:600px; margin-left: auto; float: right;">
+        <h4>Orders</h4>
+        <div id="Orders">
+            <table>
+                {% for order in orders %}
+                <tr>
+                    <td>
+                        {{order['symbol']}}
+                    </td>
+                    <td>
+                        {{order['positionSide']}}
+                    </td>
+                    <td>
+                        {{order['executedQty']}}
+                    </td>
+                </tr>
+
+                {% endfor %}
+            </table>
+
+        </div>
+    </div>
+
+    <div style="border: solid gray 1px; padding: 20px; margin-top: 20px; width:600px; margin-left: 20px; margin-right: auto; margin-bottom: auto; float: left;">
+        <h4>Balances</h4>
         <div id="my_balances">
-            <h2>Balances</h2>
+
             <!-- {{ my_balances }} -->
 
             <table>
                 {% for balance in my_balances %}
-                     
-                
+
+
                 <tr>
                     <td>
                         {{balance['asset']}}
@@ -62,40 +121,35 @@
 
                 {% endfor %}
             </table>
-            
-            
+
+
 
         </div>
+    </div>
 
-        <h3>Settings</h3>
-        <div id="settings">
-            <input type = "checkbox"/> RSI  
-            <input type="text" id="rsi_length" name="rsi_length" placeholder="14"/>
-            Overbought
-            <input type="text" id="rsi_overbought" name="rsi_overbought" placeholder="70"/>   
-            Oversold
-            <input type="text" id="rsi_oversold" name="rsi_oversold" placeholder="30"/>   
-           
-        </div>
 
-        <script>
-            //var binanceSocket = new WebSocket("wss://stream.binance.com:9443/ws/btcusdt@trade");
-            //console.log(binanceSocket)
-            
-            var tradeDiv = document.getElementById('trades');
+
+
+
+    <script>
+        //var binanceSocket = new WebSocket("wss://stream.binance.com:9443/ws/btcusdt@trade");
+        //console.log(binanceSocket)
+
+        var tradeDiv = document.getElementById('trades');
             /*
-            binanceSocket.onmessage = function (event) {
-                // console.log(event.data);
+        binanceSocket.onmessage = function (event) {
+            // console.log(event.data);
 
-                var messageObject = JSON.parse(event.data);
+            var messageObject = JSON.parse(event.data);
 
-                tradeDiv.append(messageObject.p)
-            }
-            */
-        </script>
-        <!-- <script src="chart.js"></script>  Instead of using it like this, for flask we will make a static directory-->
+            tradeDiv.append(messageObject.p)
+        }
+        */
+    </script>
+    <!-- <script src="chart.js"></script>  Instead of using it like this, for flask we will make a static directory-->
 
-        <!-- Essentially what this says is that inside the "static" folder, look for chart.js. The double curly brackets are variables-->
-        <script src ="{{ url_for('static',filename = 'chart.js') }}"></script>
-    </body>
+    <!-- Essentially what this says is that inside the "static" folder, look for chart.js. The double curly brackets are variables-->
+    <script src ="{{ url_for('static',filename = 'chart.js') }}"></script>
+</body>
+
 </html>

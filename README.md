@@ -1,37 +1,98 @@
+# CoinSentient
+A suite of programs for collecting, analysing and eventually, implementing data related to cryptocurrencies. Also, allows you to check your balance, place orders from one place.
+
+# How it looks
+
+## Web App
+![demo1](demo/App1.png)
+![demo2](demo/App2.png)
+
+## Implementing Strategies/Backtesting
+![demo1](demo/Backtester1.png)
+![demo1](demo/Backtester2.png)
+
+## Obtaining Data
+![demo1](demo/Data1.png)
+
+
 # Prerequisites
+Wheel, Flask, TALib, Pandas, and others in Requirements.txt
+
+```
 pip install csv
 pip install wheel
 pip install TA_Lib-0.4.21-cp39-cp39-win_amd64.whl 
 
 pip install -r requirements.txt
+```
 
+# How to run
+
+Edit fake_config.py and rename it to config.py and modify relevant fields
+
+### Web app interface:
+```
 .venv\Scripts\activate
 
-# Using Flask and Jinja for stuff. Jinja is basically html with extra programming stuff like looping
+flask run
+```
 
-## In jinja/flask
-the variables are basically defined as {{ these_brackets}}
+### For backtesting strategies:
+```
+python backtest.py
+```
 
-And then, we can pass them as paramaters to whatever file we will call through our render template.
+# Strategies
 
-So essentially, the jinja/flask/render_templates basically treat html files as callback functions, and well yeah you pass parameters.
+## RSI-Based Strategy:
 
-# WSS / Websocket Streams:
 
-Base endpoint: wss://stream.binance.com:9443
+RSI is calculated as RSI = 100 - ((100)/1+RS)
+where RS is the average of x days up divided by the average of x days down closes. The strategy buys when RSI dips below 30, and sells when the RSI rises above 70.
+
+
+## Stochastic RSI Strategy:
+The strategy works similar to RSI Strategy, except it uses Stochastic RSI for its working.
+
+## EMA Crossover Strategy:
+The strategy buys whenever:
+* the Fast Exponential Moving Average (Length = 13) crosses above the Slow Exponential Moving Average (Length = 21), all while the price maintains itself above the Long EMA (Length = 200).
+
+It sells whenever the vice-versa happens
+
+## EMA Aggressive Setting:
+Similar to EMA Crossover, except it disregards the Long EMA, and only checks for crosses.
+
+## Ichimoku:
+The strategy buys whenever:
+* A TK Cross happens (Base / Conversion Line cross each other in a bullish manner)
+* Price also maintains above the Senkou Span
+
+## HODL (Hold Onto Dear Life):
+This strategy buys whenever it can, and never sells.
+
+
+# Misc info about the api, sockets:
+
+* Base endpoint: wss://stream.binance.com:9443
 
 ## View data through websockets:
+```
 wscat -c wss://stream.binance.com:9443/ws/btcusdt@trade / wss://stream.binance.com:9443/ws/btcusdt@kline_5m
+```
 
 ### Store the data to a file: 
+
+```
 wscat -c wss://stream.binance.com:9443/ws/btcusdt@kline_5m | tee dataset.txt
+```
 
+Raw streams are accessed at ```/ws/<streamName>```
 
-Raw streams are accessed at /ws/<streamName>
-Combined streams are accessed at /stream?streams=<streamName1>/<streamName2>/<streamName3>
+Combined streams are accessed at ```/stream?streams=<streamName1>/<streamName2>/<streamName3>```
 
-
-# Trade Streams Payload
+## Trade Streams Payload
+```
 {
   "e": "trade",     // Event type
   "E": 123456789,   // Event time
@@ -45,8 +106,10 @@ Combined streams are accessed at /stream?streams=<streamName1>/<streamName2>/<st
   "m": true,        // Is the buyer the market maker?
   "M": true         // Ignore
 }
+```
 
-# Kline/Candlestick Charts:
+## Kline/Candlestick Charts:
+```
 {
   "e": "kline",     // Event type
   "E": 123456789,   // Event time
@@ -71,8 +134,9 @@ Combined streams are accessed at /stream?streams=<streamName1>/<streamName2>/<st
     "B": "123456"   // Ignore
   }
 }
-
-# KLINE AGGREGATE FORMAT
+```
+## KLINE AGGREGATE FORMAT
+```
 [
   [
     1499040000000,      // Open time
@@ -90,3 +154,4 @@ Combined streams are accessed at /stream?streams=<streamName1>/<streamName2>/<st
   ]
 ]
 
+```

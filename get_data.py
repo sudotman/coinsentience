@@ -1,4 +1,5 @@
 import config, csv
+import helperFunctions
 
 #binance imports
 from binance import Client, ThreadedWebsocketManager, ThreadedDepthCacheManager
@@ -18,6 +19,7 @@ csvfile = open('Current_15minutes.csv','w',newline='')
 candlestick_writer = csv.writer(csvfile, delimiter=',')
 
 for candlestick in candles:
+    candlestick[0] = candlestick[0] / 1000
     candlestick_writer.writerow(candlestick)
 
 csvfile.close()
@@ -25,14 +27,17 @@ csvfile.close()
 
 ### Obtain historical Klines/Candles and store/output them
 
-h_candles = client.get_historical_klines("BTCUSDT", Client.KLINE_INTERVAL_30MINUTE, "1 Dec, 2018", "1 Jan, 2020")
+#h_candles = client.get_historical_klines("BTCUSDT", Client.KLINE_INTERVAL_30MINUTE, "1 Jan, 2021", "1 July, 2021")
+h_candles = client.get_historical_klines("BTCUSDT", Client.KLINE_INTERVAL_1DAY, "1 Jan, 2010", helperFunctions.returnTime())
 h_csvfile = open('Historical_30minutes.csv','w',newline='')
 h_candlestick_writer = csv.writer(h_csvfile, delimiter=',')
 
 for candlestick in h_candles:
+    candlestick[0] = candlestick[0] / 1000
     h_candlestick_writer.writerow(candlestick)
 
 h_csvfile.close()
+
 
 
 
