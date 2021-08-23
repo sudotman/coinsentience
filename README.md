@@ -1,5 +1,5 @@
 # CoinSentient
-A suite of programs for collecting, analysing and eventually, implementing data related to cryptocurrencies. Also, allows you to check your balance, place orders from one place.
+A suite of programs for collecting, analysing and implementing data related to cryptocurrencies. Also, allows you to check your balance, place orders from one place. Also includes some custom made indicators based on which some custom strategies are executed (custom indicators/stragies not uploaded here).
 
 # How it looks
 
