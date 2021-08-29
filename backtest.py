@@ -306,10 +306,10 @@ cerebro.broker.setcash(100000.0)
 # todate = datetime.datetime.strptime('2020-07-12', '%Y-%m-%d')
 
 # daily / dt format 2 signifies unix timestamps
-# data = bt.feeds.GenericCSVData(dataname='Current_15minutes.csv', dtformat = 2)
+data = bt.feeds.GenericCSVData(dataname='HistoricalDaily.csv', dtformat = 2)
 
 # 15 minutes
-data = bt.feeds.GenericCSVData(dataname='Current_15minutes.csv', dtformat = 2, compression = 15, timeframe = bt.TimeFrame.Minutes)
+# data = bt.feeds.GenericCSVData(dataname='Current_15minutes.csv', dtformat = 2, compression = 15, timeframe = bt.TimeFrame.Minutes)
 
 # A particular range
 fromdate = datetime.datetime.strptime('2021-01-01', '%Y-%m-%d')
@@ -319,7 +319,7 @@ todate = datetime.datetime.strptime('2021-04-12', '%Y-%m-%d')
 
 cerebro.adddata(data)
 
-cerebro.addstrategy(EMAStrategyAggressive)
+cerebro.addstrategy(Ichimoku)
 
 # Broker / 0.1% ... divide by 100 to remove the %
 cerebro.broker.setcommission(commission=0.001)

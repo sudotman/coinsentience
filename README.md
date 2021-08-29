@@ -47,7 +47,7 @@ python backtest.py
 ## RSI-Based Strategy:
 
 
-RSI is calculated as RSI = 100 - ((100)/1+RS)
+RSI is calculated as `RSI = 100 - ((100)/1+RS)`
 where RS is the average of x days up divided by the average of x days down closes. The strategy buys when RSI dips below 30, and sells when the RSI rises above 70.
 
 
@@ -55,6 +55,18 @@ where RS is the average of x days up divided by the average of x days down close
 The strategy works similar to RSI Strategy, except it uses Stochastic RSI for its working.
 
 ## EMA Crossover Strategy:
+An Exponential Moving Average is similar to a Simple Moving Average excluding the fact that EMA gives more weightage to more recent data.
+
+The formula is as follow:
+`Current EMA = ((Price(current) - previous EMA) X multiplier) + previous EMA`
+
+The most important factor is the smoothing constant that = 2/(1+N) where N = the number of days.
+For example:
+`A 10-day EMA = 2/(1+10) = 0.1818`
+
+So in a nutshell, the formula becomes:
+`EMA = Closing price x multiplier + EMA (previous day) x (1-multiplier)`
+
 The strategy buys whenever:
 * the Fast Exponential Moving Average (Length = 13) crosses above the Slow Exponential Moving Average (Length = 21), all while the price maintains itself above the Long EMA (Length = 200).
 
