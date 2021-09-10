@@ -78,10 +78,14 @@ def strategy():
 def settings():
     return 'settings'
 
+@app.route('/aggr')
+def route():
+    return render_template("aggr/dist/index.html", title = 'Projects')
+
 @app.route('/history')
 def history():
    
-    candlesticks = client.get_historical_klines("BTCUSDT", Client.KLINE_INTERVAL_5MINUTE, "1 Aug, 2021", helperFunctions.returnTime())
+    candlesticks = client.get_historical_klines("BTCUSDT", Client.KLINE_INTERVAL_15MINUTE, "1 Aug, 2021", helperFunctions.returnTime())
 
     processed_candlesticks = []
 
