@@ -14,6 +14,8 @@ A suite of programs for collecting, analysing and implementing data related to c
 ## Obtaining Data
 ![demo1](demo/Data1.png)
 
+## Aggregate Data/Chart
+![demo1](demo/Aggr.png)
 
 # Prerequisites
 Wheel, Flask, TALib, Pandas, and others in Requirements.txt
@@ -82,6 +84,9 @@ The strategy buys whenever:
 
 ## HODL (Hold Onto Dear Life):
 This strategy buys whenever it can, and never sells.
+
+# Aggregator:
+Uses Tucsky's aggregator implementation to collect aggregate orders data from major exchanges and then display them. Uses Vue.js for the handling.
 
 
 # Misc info about the api, sockets:
